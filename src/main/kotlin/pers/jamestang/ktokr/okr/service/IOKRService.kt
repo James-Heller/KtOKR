@@ -8,4 +8,9 @@ interface IOKRService {
 
     fun getByUserId(adminId: Int): List<OKR>
 
+    fun createOKR(okr: OKR): Boolean
+
+    fun createAlignOKR(okr: OKR, masterObjectiveId: Int): Boolean
+
+    fun removeInvisibleOKR(list: List<OKR>): List<Int>
 }

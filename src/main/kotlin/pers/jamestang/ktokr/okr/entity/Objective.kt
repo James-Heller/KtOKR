@@ -1,8 +1,6 @@
 package pers.jamestang.ktokr.okr.entity
 
 import org.ktorm.entity.Entity
-import pers.jamestang.ktokr.system.entity.Admin
-import pers.jamestang.ktokr.system.entity.Department
 import java.time.LocalDate
 
 
@@ -17,9 +15,13 @@ interface Objective : Entity<Objective> {
     var description: String?
     var startDate: LocalDate
     var endDate: LocalDate
+    var scope: Scope
     var status: ObjectiveStatus
+    var visibility: OKRVisibility
 
 }
 
 enum class ObjectiveStatus { DRAFT, IN_PROGRESS, COMPLETED, CANCELLED }
+enum class Scope { COMPANY, DEPARTMENT, PERSONAL }
+enum class OKRVisibility{ PUBLIC, LEADER_ONLY}
 

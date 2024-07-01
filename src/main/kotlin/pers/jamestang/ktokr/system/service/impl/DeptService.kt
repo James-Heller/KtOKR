@@ -85,4 +85,8 @@ class DeptService(
         return true
     }
 
+    override infix fun Department.isMasterOf(dept: Department): Boolean {
+        TODO()
+    }
+
 }

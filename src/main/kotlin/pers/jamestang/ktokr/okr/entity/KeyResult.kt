@@ -13,9 +13,9 @@ interface KeyResult: Entity<KeyResult> {
     var currentValue: BigDecimal
     var measurementType: MeasurementType
     var status: KeyResultStatus
-
+    var visibility: OKRVisibility
 }
 
-enum class MeasurementType { NUMBER, PERCENTAGE}
+enum class MeasurementType { NUMERIC, PERCENTAGE}
 
 enum class KeyResultStatus { NOT_STARTED,IN_PROGRESS, ACHIEVED,MISSED}

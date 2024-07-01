@@ -20,4 +20,6 @@ interface IDeptService {
     fun setSecondaryHead(deptId: Int, userId: Int?): Boolean
 
     fun changeDeptMembers(deptId: Int, userIds: List<Int>): Boolean
+
+    infix fun Department.isMasterOf(dept: Department): Boolean
 }
