@@ -2,14 +2,13 @@ package pers.jamestang.ktokr.system.security
 
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
+import org.ktorm.support.mysql.jsonContains
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Component
 import pers.jamestang.ktokr.system.entity.LoginAdmin
-import pers.jamestang.ktokr.system.repository.Admins
-import pers.jamestang.ktokr.system.repository.Roles
-import pers.jamestang.ktokr.system.repository.UserRoles
+import pers.jamestang.ktokr.system.repository.*
 
 @Component
 class DBAuthHandler(
@@ -23,11 +22,20 @@ class DBAuthHandler(
             .map { Admins.createEntity(it) }
             .firstOrNull() ?: throw Exception("Admin not found")
 
+        val userDept = database.from(Departments)
+            .leftJoin(DepartmentMembers, Departments.id eq DepartmentMembers.deptId)
+            .select(Departments.columns)
+            .where{ DepartmentMembers.deptMember.jsonContains(admin.id)}
+            .map { Departments.createEntity(it) }
+            .firstOrNull() ?: throw Exception("Department not found")
+
+
+
         val userRoles = database.from(Roles)
             .leftJoin(UserRoles, Roles.id eq UserRoles.roleId)
             .select(Roles.roleCode)
             .map { row -> SimpleGrantedAuthority(row[Roles.roleCode]) }
 
-        return LoginAdmin(admin, userRoles.toMutableList())
+        return LoginAdmin(admin, userRoles.toMutableList(), userDept)
     }
 }

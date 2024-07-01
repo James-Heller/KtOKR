@@ -3,7 +3,7 @@ package pers.jamestang.ktokr.system.entity
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
-class LoginAdmin(private val admin: Admin, private val authorities: MutableCollection<GrantedAuthority>): UserDetails {
+class LoginAdmin(private val admin: Admin, private val authorities: MutableCollection<GrantedAuthority>, private val userDept: Department): UserDetails {
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         return authorities
     }
@@ -14,6 +14,10 @@ class LoginAdmin(private val admin: Admin, private val authorities: MutableColle
 
     override fun getUsername(): String {
         return admin.username
+    }
+
+    fun getUserDept(): Department {
+        return userDept
     }
 
     fun getUserId(): Int {

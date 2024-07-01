@@ -41,4 +41,20 @@ class RoleController(
     fun update(@RequestBody role: Role) = if (roleService.updateRole(role)){
         Resp.success()
     }else Resp.error("Update role failed")
+
+    @PostMapping("/setRoleMenus")
+    fun setRoleMenus(roleId: Int, menuIds: List<Int>) = if (roleService.setRoleMenus(roleId, menuIds)){
+        Resp.success()
+    }else Resp.error("Set role menus failed")
+
+    @PostMapping("/setRolePermissions")
+    fun setRolePermissions(roleId: Int, permissionIds: List<Int>) = if (roleService.setRolePermissions(roleId, permissionIds)){
+        Resp.success()
+    }else Resp.error("Set role permissions failed")
+
+    @GetMapping("/getRoleMenus")
+    fun getRoleMenus(roleId: Int) = Resp.data(roleService.getRoleMenus(roleId))
+
+    @GetMapping("/getRolePermissions")
+    fun getRolePermissions(roleId: Int) = Resp.data(roleService.getRolePermissions(roleId))
 }

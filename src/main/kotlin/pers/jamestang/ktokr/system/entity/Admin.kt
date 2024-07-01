@@ -10,5 +10,4 @@ interface Admin : Entity<Admin>{
     var password: String
     var email: String
 
-
 }
