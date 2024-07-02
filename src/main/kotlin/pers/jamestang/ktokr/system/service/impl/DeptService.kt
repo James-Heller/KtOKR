@@ -3,6 +3,8 @@ package pers.jamestang.ktokr.system.service.impl
 import org.ktorm.database.Database
 import org.ktorm.dsl.*
 import org.ktorm.entity.*
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.CachePut
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import pers.jamestang.ktokr.system.entity.Department
@@ -16,6 +18,7 @@ class DeptService(
     private val database: Database
 ): IDeptService {
 
+    @CachePut("deptList")
     override fun getList(): List<Department> {
         return database.sequenceOf(Departments).toList()
     }
@@ -33,16 +36,19 @@ class DeptService(
 
     }
 
+    @CacheEvict("deptList")
     override fun createDept(department: Department): Boolean {
 
         return database.sequenceOf(Departments).add(department) > 0
     }
 
+    @CacheEvict("deptList")
     override fun updateDept(department: Department): Boolean {
         return database.sequenceOf(Departments).update(department) > 0
     }
 
     @Transactional
+    @CacheEvict("deptList")
     override fun deleteDept(id: Int): Boolean {
 
         database.sequenceOf(Departments).removeIf { it.id eq id } > 0
@@ -85,8 +91,5 @@ class DeptService(
         return true
     }
 
-    override infix fun Department.isMasterOf(dept: Department): Boolean {
-        TODO()
-    }
 
 }

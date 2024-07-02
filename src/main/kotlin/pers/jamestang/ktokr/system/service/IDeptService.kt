@@ -21,5 +21,4 @@ interface IDeptService {
 
     fun changeDeptMembers(deptId: Int, userIds: List<Int>): Boolean
 
-    infix fun Department.isMasterOf(dept: Department): Boolean
 }

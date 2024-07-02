@@ -1,5 +1,6 @@
 package pers.jamestang.ktokr.okr.service
 
+import pers.jamestang.ktokr.okr.entity.KeyResult
 import pers.jamestang.ktokr.okr.entity.vo.OKR
 
 interface IOKRService {
@@ -12,5 +13,8 @@ interface IOKRService {
 
     fun createAlignOKR(okr: OKR, masterObjectiveId: Int): Boolean
 
-    fun removeInvisibleOKR(list: List<OKR>): List<Int>
+    fun getCanAlignOKRList(): List<KeyResult>
+
+    fun removeInvisibleOKR(list: List<OKR>): List<OKR>
+
 }

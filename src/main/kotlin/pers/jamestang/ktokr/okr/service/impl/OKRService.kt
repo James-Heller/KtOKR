@@ -1,18 +1,15 @@
 package pers.jamestang.ktokr.okr.service.impl
 
 import org.ktorm.database.Database
-import org.ktorm.database.asIterable
 import org.ktorm.dsl.*
 import org.ktorm.entity.add
 import org.ktorm.entity.sequenceOf
 import org.ktorm.entity.toList
-import org.ktorm.jackson.JsonSqlType
-import org.ktorm.schema.SqlType
 import org.ktorm.support.mysql.jsonContains
-import org.ktorm.support.mysql.jsonExtract
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import pers.jamestang.ktokr.okr.entity.KeyResult
 import pers.jamestang.ktokr.okr.entity.KeyResultStatus
 import pers.jamestang.ktokr.okr.entity.OKRAlignment
 import pers.jamestang.ktokr.okr.entity.vo.OKR
@@ -20,6 +17,7 @@ import pers.jamestang.ktokr.okr.repository.KeyResults
 import pers.jamestang.ktokr.okr.repository.OKRAlignments
 import pers.jamestang.ktokr.okr.repository.Objectives
 import pers.jamestang.ktokr.okr.service.IOKRService
+import pers.jamestang.ktokr.system.entity.Department
 import pers.jamestang.ktokr.system.entity.LoginAdmin
 import pers.jamestang.ktokr.system.repository.DepartmentMembers
 import pers.jamestang.ktokr.system.repository.Departments
@@ -99,22 +97,91 @@ class OKRService(
     }
 
 
-    override fun removeInvisibleOKR(list: List<OKR>): List<Int> {
+    override fun removeInvisibleOKR(list: List<OKR>): List<OKR> {
 
-//        val currentUserDept = (SecurityContextHolder.getContext().authentication.principal as LoginAdmin).getUserDept()
-
+        val currentUserDept = (SecurityContextHolder.getContext().authentication.principal as LoginAdmin).getUserDept()
         val okrOwnerIds = list.map { it.objective.adminId }.distinct()
+        val okrOwnersDeptMap = mutableMapOf<Int, Department>()
 
-
-        val okrOwnersDeptIdList = okrOwnerIds.map { id ->
-            database.from(Departments)
+        okrOwnerIds.forEach { ownerId ->
+            val dept = database.from(Departments)
                 .leftJoin(DepartmentMembers, on = Departments.id eq DepartmentMembers.deptId)
                 .select(Departments.columns)
-                .where { DepartmentMembers.deptMember.jsonContains(id) }.map(Departments::createEntity)
+                .where { DepartmentMembers.deptMember.jsonContains(ownerId) }
+                .map(Departments::createEntity)
+                .firstOrNull()
+
+            if (dept != null) {
+                okrOwnersDeptMap[ownerId] = dept
+            }
         }
 
+        val okrByOwnerId = list.groupBy { it.objective.adminId }
+        val resultList = mutableListOf<OKR>()
 
-        TODO()
+        okrByOwnerId.forEach { (ownerId, okrs) ->
+            val currentDept = okrOwnersDeptMap[ownerId] ?: return@forEach
+            val isMaster = currentUserDept isMasterOf currentDept
+            if (isMaster) {
+                resultList.addAll(okrs)
+            }
+        }
+
+        return resultList
+    }
+
+    override fun getCanAlignOKRList(): List<KeyResult> {
+
+        val currentUserDept = (SecurityContextHolder.getContext().authentication.principal as LoginAdmin).getUserDept()
+        val okrList = removeInvisibleOKR(getList())
+
+        val leaders = getLeaders(currentUserDept)
+
+        return okrList.filter { leaders.contains(it.objective.adminId) }.map { it.keyResults }.flatten()
+    }
+
+
+    private infix fun Department.isMasterOf(dept: Department): Boolean {
+
+        val departments = deptService.getList()
+        var currentDept: Department? = dept
+        while (currentDept != null){
+            if (currentDept.parentId == this.id){
+                return true
+            }
+            currentDept = departments.find { it.id == currentDept!!.parentId }
+        }
+        return false
+    }
+
+    private fun getLeaders(currentUserDept: Department): List<Int>{
+
+        val masterDepartmentList = getMasterDept(currentUserDept)
+        val leaders = mutableListOf<Int>()
+        masterDepartmentList.map {
+            if (it.primaryHead != null){
+                leaders.add(it.primaryHead!!)
+            }
+            if (it.secondaryHead != null) {
+                leaders.add(it.secondaryHead!!)
+            }
+        }
+
+        return leaders
+    }
+
+    private fun getMasterDept(currentUserDept: Department): List<Department>{
+        val departments = deptService.getList()
+        val masterDeptList = mutableListOf<Department>()
+        var currentDept: Department? = currentUserDept
+        while (currentDept != null){
+            val masterDept = departments.find { it.id == currentDept!!.parentId }
+            if (masterDept != null){
+                masterDeptList.add(masterDept)
+            }
+            currentDept = masterDept
+        }
+        return masterDeptList
     }
 
 }

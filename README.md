@@ -21,9 +21,9 @@ This is an OKR (Objectives and Key Results) system developed using Kotlin2, Spri
 
 ## Prerequisites
 
-- **Java 17**: Ensure you have JDK 17 installed.
+- **Java 21**: Ensure you have JDK 21 installed.
 - **Maven**: Use Maven for dependency management.
-- **Database**: Set up a PostgreSQL or MySQL database.
+- **Database**: Set up a MySQL database.
 
 ## Getting Started
 
@@ -38,7 +38,7 @@ This is an OKR (Objectives and Key Results) system developed using Kotlin2, Spri
    ```yaml
    spring:
    datasource:
-   url: jdbc:postgresql://localhost:5432/okr_db
+   url: jdbc:mysql://localhost:3306/okr_db
    username: your_db_username
    password: your_db_password
    jpa:
@@ -76,4 +76,4 @@ This project is licensed under the MIT License.
 
 ## Contact
 
-For any questions or feedback, please contact [jamestang.space](mailto:James-Heller@Outlook.com).
+For any questions or feedback, please contact [James-Heller@Outlook.com](mailto:James-Heller@Outlook.com).
