@@ -1,41 +1,79 @@
-# KtOKR
 
-KtOKR 是一个基于 Spring Boot 3.2，Spring Security 6，Kotlin 2.0，Ktorm 和 Caffeine 库的 OKR 管理系统。
+# OKR System
 
-## 主要技术栈
+This is an OKR (Objectives and Key Results) system developed using Kotlin2, SpringBoot3, SpringSecurity6, Ktorm, and Caffeine. The system is designed to help organizations set, track, and achieve their goals efficiently.
 
-- Spring Boot 3.3
-- Spring Security 6
-- Kotlin 2.0
-- Ktorm
-- Caffeine
+## Features
 
-## 如何运行
+- **Objectives Management**: Create, update, and delete objectives.
+- **Key Results Tracking**: Associate key results with objectives and track their progress.
+- **User Authentication and Authorization**: Secure the application with Spring Security.
+- **Database Management**: Use Ktorm for efficient database operations.
+- **Caching**: Implement caching with Caffeine for improved performance.
 
-1. 克隆项目到本地
-2. 使用 IntelliJ IDEA 2024.1.4 或者其他支持 Kotlin2 的 IDE 打开项目
-3. 运行 `mvn clean install` 来安装依赖
-4. 运行项目
+## Technology Stack
 
-## 功能特性
+- **Kotlin 2**: The primary programming language for the backend development.
+- **Spring Boot 3**: Framework for building the application.
+- **Spring Security 6**: Security framework for authentication and authorization.
+- **Ktorm**: Lightweight ORM framework for database operations.
+- **Caffeine**: High-performance caching library.
 
-- RBAC 权限系统：基于角色的访问控制 (RBAC) 是一种广泛使用的访问控制机制，它根据用户的角色来分配权限。
-- Spring Security：Spring Security 是一个强大的和高度可定制的身份验证和访问控制框架。
-- Ktorm：Ktorm 是一个基于 Kotlin 的轻量级但功能强大的 ORM 框架，它使用简单直观的 API 来操作数据库。
-- Caffeine：Caffeine 是一个基于 Java 8 的高性能、可伸缩的缓存库。
+## Prerequisites
 
-## 贡献
+- **Java 17**: Ensure you have JDK 17 installed.
+- **Maven**: Use Maven for dependency management.
+- **Database**: Set up a PostgreSQL or MySQL database.
 
-欢迎任何形式的贡献，包括但不限于问题报告，功能请求，文档改进和代码提交。
+## Getting Started
 
-## 许可证
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/James-Heller/KtOKR.git
+   cd KtOKR
+   ```
 
-请参阅 LICENSE 文件以获取更多信息。
+2. **Configure the database**:
+   Update the `application.yml` file with your database configuration.
+   ```yaml
+   spring:
+   datasource:
+   url: jdbc:postgresql://localhost:5432/okr_db
+   username: your_db_username
+   password: your_db_password
+   jpa:
+   hibernate:
+   ddl-auto: update
+   ```
 
-## 联系方式
+3. **Build the project**:
+   ```bash
+   ./mvnw clean install
+   ```
 
-如果您有任何问题或建议，请通过 GitHub Issues 或者电子邮件与我们联系。
+4. **Run the application**:
+   ```bash
+   ./mvnw spring-boot:run
+   ```
 
-## 免责声明
+## API Documentation
 
-此项目仅供学习和研究使用，不得用于任何非法目的。
+The API documentation is available at `/swagger-ui.html` after starting the application.
+
+## Contributing
+
+We welcome contributions! Please follow these steps:
+
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature-branch`).
+3. Commit your changes (`git commit -am 'Add new feature'`).
+4. Push to the branch (`git push origin feature-branch`).
+5. Create a new Pull Request.
+
+## License
+
+This project is licensed under the MIT License.
+
+## Contact
+
+For any questions or feedback, please contact [jamestang.space](mailto:James-Heller@Outlook.com).
